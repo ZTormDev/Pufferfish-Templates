@@ -428,5 +428,6 @@
             ],
             "image": "eclipse-temurin:25"
         }
-    ]
+    ],
+    "requirements": {}
 }
