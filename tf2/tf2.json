@@ -1,0 +1,79 @@
+{
+  "type": "srcds",
+  "display": "Team Fortress 2",
+  "data": {
+    "ip": {
+      "type": "string",
+      "value": "0.0.0.0",
+      "display": "IP",
+      "desc": "What IP to bind the server to",
+      "required": true,
+      "userEdit": false
+    },
+    "mapname": {
+      "type": "string",
+      "value": "ctf_2fort",
+      "display": "Team Fortess 2 Map to load",
+      "desc": "TF2 Map",
+      "required": true,
+      "userEdit": true
+    },
+    "port": {
+      "type": "integer",
+      "value": 27015,
+      "display": "Port",
+      "desc": "What port to bind the server to",
+      "required": true,
+      "userEdit": false
+    }
+  },
+  "install": [
+    {
+      "if": "env == 'host'",
+      "type": "steamgamedl",
+      "appId": "232250"
+    },
+    {
+      "if": "env == 'docker'",
+      "type": "command",
+      "commands": [
+        "steamcmd +force_install_dir /pufferpanel +login anonymous +app_update 232250 +quit"
+      ]
+    },
+    {
+      "type": "command",
+      "commands": [
+        "chmod +x srcds_run"
+      ]
+    }
+  ],
+  "run": {
+    "command": "./srcds_run +ip ${ip} +port ${port} -game tf -console +map ${mapname} -norestart",
+    "stop": "exit",
+    "stdin": {
+      "type": "stdin"
+    },
+    "autostart": false,
+    "autorecover": false,
+    "autorestart": false
+  },
+  "environment": {
+    "type": "host"
+  },
+  "supportedEnvironments": [
+    {
+      "type": "host"
+    },
+    {
+      "type": "docker",
+      "image": "pufferpanel/steamcmd",
+      "portBindings": [
+        "0.0.0.0:${port}:${port}/tcp"
+      ]
+    }
+  ],
+  "requirements": {
+    "os": "linux",
+    "arch": "amd64"
+  }
+}

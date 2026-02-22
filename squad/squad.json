@@ -1,0 +1,122 @@
+{
+  "type": "squad",
+  "display": "SQUAD Dedicated Server",
+  "data": {
+    "fixed_max_players": {
+      "type": "integer",
+      "value": 80,
+      "display": "Fixed Max Players",
+      "desc": "Player count cannot go higher than this",
+      "required": true,
+      "userEdit": false
+    },
+    "port": {
+      "type": "integer",
+      "value": 7787,
+      "display": "Port",
+      "desc": "Game server port",
+      "required": true,
+      "userEdit": false
+    },
+    "query_port": {
+      "type": "integer",
+      "value": 27165,
+      "display": "Steam Query Port",
+      "desc": "Steam query port",
+      "required": true,
+      "userEdit": false
+    },
+    "random": {
+      "type": "option",
+      "value": "NONE",
+      "display": "Random",
+      "desc": "Randomize map rotation",
+      "required": true,
+      "userEdit": false,
+      "options": [
+        {
+          "value": "NONE",
+          "display": "None"
+        },
+        {
+          "value": "FIRST",
+          "display": "First"
+        },
+        {
+          "value": "ALWAYS",
+          "display": "Always"
+        }
+      ]
+    }
+  },
+  "install": [
+    {
+      "if": "env == 'host'",
+      "type": "steamgamedl",
+      "appId": "403240"
+    },
+    {
+      "if": "env == 'docker'",
+      "type": "command",
+      "commands": [
+        "steamcmd +force_install_dir /pufferpanel +login anonymous +app_update 403240 +quit"
+      ]
+    },
+    {
+      "type": "command",
+      "commands": [
+        "chmod +x SquadGame/Binaries/Linux/SquadGameServer"
+      ]
+    }
+  ],
+  "run": {
+    "command": "SquadGame/Binaries/Linux/SquadGameServer Port=${port} QueryPort=${query_port} FIXEDMAXPLAYERS=${fixed_max_players} RANDOM=${random}",
+    "stopCode": 15,
+    "expectedExitCode": 143,
+    "pre": [
+      {
+        "if": "env == 'host'",
+        "type": "steamgamedl",
+        "appId": "403240"
+      },
+      {
+        "if": "env == 'docker'",
+        "type": "command",
+        "commands": [
+          "steamcmd +force_install_dir /pufferpanel +login anonymous +app_update 403240 +quit"
+        ]
+      },
+      {
+        "type": "command",
+        "commands": [
+          "chmod +x SquadGame/Binaries/Linux/SquadGameServer"
+        ]
+      }
+    ],
+    "stdin": {
+      "type": "stdin"
+    },
+    "autostart": false,
+    "autorecover": false,
+    "autorestart": false
+  },
+  "environment": {
+    "type": "host"
+  },
+  "supportedEnvironments": [
+    {
+      "type": "host"
+    },
+    {
+      "type": "docker",
+      "image": "steamcmd/steamcmd",
+      "portBindings": [
+        "0.0.0.0:${port}:${port}/tcp"
+      ]
+    }
+  ],
+  "requirements": {
+    "os": "linux",
+    "arch": "amd64"
+  }
+}

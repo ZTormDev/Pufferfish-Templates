@@ -1,0 +1,110 @@
+{
+  "type": "minecraft-java",
+  "display": "Velocity - Minecraft",
+  "icon": "minecraft-java",
+  "data": {
+    "build": {
+      "type": "integer",
+      "value": 195,
+      "display": "Velocity Build",
+      "desc": "Build of the Velocity Version to use",
+      "required": true,
+      "userEdit": true
+    },
+    "ip": {
+      "type": "string",
+      "value": "0.0.0.0",
+      "display": "IP",
+      "desc": "What IP to bind the server to",
+      "required": true,
+      "userEdit": false
+    },
+    "memory": {
+      "type": "integer",
+      "value": 512,
+      "display": "Memory (MB)",
+      "desc": "How much memory in MB to allocate to the Waterfall server. It is generally recommended to allocated 512MB RAM for every 500 players. Please keep in mind that additional plugins may impact the amount needed in your case.",
+      "required": true,
+      "userEdit": false
+    },
+    "motd": {
+      "type": "string",
+      "value": "A Velocity proxy &9hosted on PufferPanel",
+      "display": "MOTD message of the day",
+      "desc": "This is the message that is displayed in the server list of the client, below the name. The MOTD does support <a href='https://minecraft.wiki/w/Formatting_codes' target='_blank'>color and formatting codes</a>.",
+      "required": true,
+      "userEdit": true
+    },
+    "port": {
+      "type": "integer",
+      "value": 25565,
+      "display": "Port",
+      "desc": "What port to bind the server to",
+      "required": true,
+      "userEdit": false
+    },
+    "version": {
+      "type": "string",
+      "value": "3.1.2-SNAPSHOT",
+      "display": "Velocity Version",
+      "desc": "Version of Velocity to install.",
+      "required": true,
+      "userEdit": true
+    }
+  },
+  "install": [
+    {
+      "if": "env == 'host'",
+      "type": "javadl",
+      "version": "17"
+    },
+    {
+      "type": "download",
+      "files": [
+        "https://api.papermc.io/v2/projects/velocity/versions/${version}/builds/${build}/downloads/velocity-${version}-${build}.jar"
+      ]
+    },
+    {
+      "type": "move",
+      "source": "velocity-*.jar",
+      "target": "velocity.jar"
+    }
+  ],
+  "run": {
+    "command": [
+      {
+        "command": "java17 -Xmx${memory}M -Xms${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar velocity.jar",
+        "if": "env == 'host'"
+      },
+      {
+        "command": "java -Xmx${memory}M -Xms${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar velocity.jar"
+      }
+    ],
+    "stop": "shutdown",
+    "stdin": {
+      "type": "stdin"
+    },
+    "autostart": false,
+    "autorecover": false,
+    "autorestart": false
+  },
+  "environment": {
+    "type": "host"
+  },
+  "supportedEnvironments": [
+    {
+      "type": "host"
+    },
+    {
+      "type": "docker",
+      "image": "eclipse-temurin:17",
+      "portBindings": [
+        "0.0.0.0:${port}:${port}/tcp"
+      ]
+    }
+  ],
+  "requirements": {},
+  "stats": {
+    "type": "jcmd"
+  }
+}

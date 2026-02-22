@@ -1,0 +1,140 @@
+{
+  "type": "srcds",
+  "display": "Counter Strike: Global Offensive",
+  "icon": "csgo",
+  "data": {
+    "clientport": {
+      "type": "integer",
+      "value": 27016,
+      "display": "Client Port",
+      "desc": "What port to bind the clientport to",
+      "required": true,
+      "userEdit": false
+    },
+    "gamemap": {
+      "type": "string",
+      "value": "de_dust2",
+      "display": "Map",
+      "desc": "Map to load by default",
+      "required": true,
+      "userEdit": true
+    },
+    "gamemode": {
+      "type": "integer",
+      "value": 0,
+      "display": "Gamemode",
+      "desc": "(Advanced) Gamemode",
+      "required": true,
+      "userEdit": true
+    },
+    "gametype": {
+      "type": "integer",
+      "value": 0,
+      "display": "Gametype",
+      "desc": "(Advanced) Gametype",
+      "required": true,
+      "userEdit": true
+    },
+    "gslt": {
+      "type": "string",
+      "value": "",
+      "display": "GSLT Token",
+      "desc": "It is required to register your server, otherwise it can only be played on LAN. Visit http://steamcommunity.com/dev/managegameservers to get a token",
+      "required": true,
+      "userEdit": true
+    },
+    "ip": {
+      "type": "string",
+      "value": "0.0.0.0",
+      "display": "IP",
+      "desc": "What IP to bind the server to",
+      "required": true,
+      "userEdit": false
+    },
+    "mapgroup": {
+      "type": "string",
+      "value": "mg_active",
+      "display": "Map group",
+      "desc": "(Advanced) Map group",
+      "required": true,
+      "userEdit": true
+    },
+    "maxplayers": {
+      "type": "integer",
+      "value": 20,
+      "display": "Max Players",
+      "desc": "Max players allowed on server",
+      "required": true,
+      "userEdit": true
+    },
+    "port": {
+      "type": "integer",
+      "value": 27015,
+      "display": "Port",
+      "desc": "What port to bind the server to",
+      "required": true,
+      "userEdit": false
+    },
+    "tickrate": {
+      "type": "integer",
+      "value": 64,
+      "display": "Tickrate",
+      "desc": "Server tick rate",
+      "required": true,
+      "userEdit": true
+    },
+    "tvport": {
+      "type": "integer",
+      "value": 27017,
+      "display": "GOTV Port",
+      "desc": "What port to bind the GOTV to",
+      "required": true,
+      "userEdit": false
+    }
+  },
+  "install": [
+    {
+      "if": "env == 'host'",
+      "type": "steamgamedl",
+      "appId": "740"
+    },
+    {
+      "if": "env == 'docker'",
+      "type": "command",
+      "commands": [
+        "steamcmd +force_install_dir /pufferpanel +login anonymous +app_update 740 +quit"
+      ]
+    }
+  ],
+  "run": {
+    "command": "./srcds_run -game csgo -usercon -strictportbind -ip ${ip} -port ${port} +clientport ${clientport} +tv_port ${tvport} +map ${gamemap} -maxplayers_override ${maxplayers} +sv_setsteamaccount ${gslt} -tickrate ${tickrate} +mapgroup ${mapgroup} +game_mode ${gamemode} +game_type ${gametype} -net_port_try 1 -norestart",
+    "stop": "exit",
+    "stdin": {
+      "type": "stdin"
+    },
+    "autostart": false,
+    "autorecover": false,
+    "autorestart": false
+  },
+  "environment": {
+    "type": "host"
+  },
+  "supportedEnvironments": [
+    {
+      "type": "host"
+    },
+    {
+      "type": "docker",
+      "image": "steamcmd/steamcmd:ubuntu-20",
+      "portBindings": [
+        "0.0.0.0:${port}:${port}/tcp",
+        "0.0.0.0:${clientport}:${clientport}/tcp",
+        "0.0.0.0:${tvport}:${tvport}/tcp"
+      ]
+    }
+  ],
+  "requirements": {
+    "os": "linux",
+    "arch": "amd64"
+  }
+}

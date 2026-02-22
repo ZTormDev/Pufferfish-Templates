@@ -1,0 +1,49 @@
+{
+  "type": "discord",
+  "display": "discord.py Bot",
+  "data": {
+    "bot-py-file": {
+      "type": "string",
+      "value": "bot.py",
+      "display": "Main bot file",
+      "desc": "The main bot file.",
+      "required": true,
+      "userEdit": true
+    }
+  },
+  "install": [
+    {
+      "type": "command",
+      "commands": [
+        "python3 -m pip install -r requirements.txt"
+      ]
+    }
+  ],
+  "run": {
+    "command": "python3 ${bot-py-file}",
+    "stopCode": 9,
+    "stdin": {
+      "type": "stdin"
+    },
+    "autostart": false,
+    "autorecover": false,
+    "autorestart": false
+  },
+  "environment": {
+    "type": "host"
+  },
+  "supportedEnvironments": [
+    {
+      "type": "host"
+    },
+    {
+      "type": "docker",
+      "image": "python"
+    }
+  ],
+  "requirements": {
+    "binaries": [
+      "python3"
+    ]
+  }
+}

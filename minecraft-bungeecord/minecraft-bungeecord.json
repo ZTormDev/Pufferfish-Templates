@@ -1,0 +1,99 @@
+{
+  "type": "minecraft-java",
+  "display": "Bungeecord - Minecraft",
+  "icon": "minecraft-java",
+  "data": {
+    "ip": {
+      "type": "string",
+      "value": "0.0.0.0",
+      "display": "IP",
+      "desc": "What IP to bind the server to",
+      "required": true,
+      "userEdit": false
+    },
+    "memory": {
+      "type": "integer",
+      "value": 512,
+      "display": "Memory (MB)",
+      "desc": "How much memory in MB to allocate to the BungeeCord server. It is generally recommended to allocated 512MB RAM for every 500 players. Please keep in mind that additional plugins may impact the amount needed in your case.",
+      "required": true,
+      "userEdit": false
+    },
+    "motd": {
+      "type": "string",
+      "value": "A BungeeCord Server &9hosted on PufferPanel",
+      "display": "MOTD message of the day",
+      "desc": "This is the message that is displayed in the server list of the client, below the name. The MOTD does support <a href='https://minecraft.wiki/w/Formatting_codes' target='_blank'>color and formatting codes</a>.",
+      "required": true,
+      "userEdit": true
+    },
+    "port": {
+      "type": "integer",
+      "value": 25577,
+      "display": "Port",
+      "desc": "What port to bind the server to",
+      "required": true,
+      "userEdit": false
+    },
+    "javaVersion": {
+      "type": "string",
+      "value": "21",
+      "display": "Java Version",
+      "desc": "What Java version to use",
+      "required": true,
+      "userEdit": false
+    }
+  },
+  "install": [
+    {
+      "if": "env == 'host' && javaVersion != ''",
+      "type": "javadl",
+      "version": "${javaVersion}"
+    },
+    {
+      "type": "download",
+      "files": [
+        "http://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar"
+      ]
+    },
+    {
+      "type": "writefile",
+      "text": "listeners:\n- query_port: ${port}\n  host: ${ip}:${port}\n  motd: '${motd}'\n",
+      "target": "config.yml"
+    }
+  ],
+  "run": {
+    "command": [
+      {
+        "command": "java${javaVersion} -Xmx${memory}M -Xms${memory}M -Dlog4j2.formatMsgNoLookups=true -jar BungeeCord.jar",
+        "if": "env == 'host' && javaVersion != ''"
+      },
+      {
+        "command": "java -Xmx${memory}M -Xms${memory}M -Dlog4j2.formatMsgNoLookups=true -jar BungeeCord.jar"
+      }
+    ],
+    "stop": "end",
+    "stdin": {
+      "type": "stdin"
+    },
+    "autostart": false,
+    "autorecover": false,
+    "autorestart": false
+  },
+  "environment": {
+    "type": "host"
+  },
+  "supportedEnvironments": [
+    {
+      "type": "host"
+    },
+    {
+      "type": "docker",
+      "image": "eclipse-temurin:${javaVersion}",
+      "portBindings": [
+        "0.0.0.0:${port}:${port}/tcp"
+      ]
+    }
+  ],
+  "requirements": {}
+}
