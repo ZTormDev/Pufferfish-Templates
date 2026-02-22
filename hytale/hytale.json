@@ -431,6 +431,6 @@
     ],
     "requirements": {
         "os": "linux",
-        "arch": "amd64"
+        "arch": "x86_64"
     }
 }
