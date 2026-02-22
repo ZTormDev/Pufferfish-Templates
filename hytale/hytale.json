@@ -428,9 +428,5 @@
             ],
             "image": "eclipse-temurin:25"
         }
-    ],
-    "requirements": {
-        "os": "linux",
-        "arch": "x86_64"
-    }
+    ]
 }
